@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import requests
 from tkinter import ttk
 
@@ -17,8 +18,8 @@ def window_config():
     window.resizable(width=0, height=0)
     window.title('Currency Converter')
     window.config(background="#42aaf5")
-    # icon = PhotoImage(file='D:\Python Stuff Goes here\money.png')
-    # window.iconphoto(True,icon)
+    icon = PhotoImage(file='money.png')
+    window.iconphoto(True,icon)
 
 
 # currency-calculating-logic
@@ -28,8 +29,6 @@ def calccurrency(currencyname, amount, to_currency):
 
     amount = float(amount / exchange_rate)
     amount = round(amount * currency['rates'][to_currency], 4)
-    #result = Label(window,font = ("Arial",11,"bold"),borderwidth=5,text=amount,bg="white",relief=RAISED)
-    # result.place(x=350,y=325)
     result.config(text=str(amount))
 
 
@@ -41,13 +40,13 @@ def gui():
 
     # From-currency-box
     combo = ttk.Combobox(window, values=names,
-                         state="readonly", font=("Courier", 11))
+                        state="readonly", font=("Courier", 11))
     combo.current(112)  # Default Value
     combo.place(x=50, y=300)
 
     # To-Currency-Box
     combo2 = ttk.Combobox(window, values=names,
-                          state="readonly", font=("Courier", 12))
+                        state="readonly", font=("Courier", 12))
     combo2.current(0)  # Default Value
     combo2.place(x=350, y=300)
 
@@ -59,11 +58,17 @@ def gui():
 
     # convert-button
     def convert():
-        from_currency = combo.get()
-        to_currency = combo2.get()
-        amount = float(entry.get())
-        # calling the main function here
-        calccurrency(from_currency, amount, to_currency)
+        try:
+            from_currency = combo.get()
+            to_currency = combo2.get()
+            amount = float(entry.get())
+            # calling the main function here
+            calccurrency(from_currency, amount, to_currency)
+            
+        except ValueError:
+            messagebox.showwarning(title="Value Error",
+                                    message="Please enter a valid value")
+
 
     convert = Button(window, text="Convert!", font=(
         "Comic Sans", 16), command=convert, bg="#545c58", activebackground="#7d827f")
@@ -72,10 +77,12 @@ def gui():
     # result box
     global result
     result = Label(window, font=("Arial", 11, "bold"), borderwidth=5,
-                   text='                                       ', bg="white", relief=RAISED)
+                text='                                       ', bg="white", relief=RAISED)
     result.place(x=350, y=325)
 
 
 window_config()
 gui()
 window.mainloop()
+
+
